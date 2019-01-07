@@ -20,6 +20,16 @@ cc.Class({
         maxMoveSpeed: 0,
         // 加速度
         accel: 0,
+
+        jumpAudio: {
+            default: null,
+            type: cc.AudioClip
+        },
+
+        canvas:{
+            default:null,
+            type:cc.Node
+        }
     },
 
     setJumpAction: function () {
@@ -27,8 +37,11 @@ cc.Class({
         var jumpUp = cc.moveBy(this.jumpDuration, cc.v2(0, this.jumpHeight)).easing(cc.easeCubicActionOut());
         // 下落
         var jumpDown = cc.moveBy(this.jumpDuration, cc.v2(0, -this.jumpHeight)).easing(cc.easeCubicActionIn());
-        // 不断重复
-        return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
+
+        // 添加一个回调函数，用于在动作结束时调用我们定义的其他方法
+        var callback = cc.callFunc(this.playJumpSound, this);
+        // 不断重复，而且每次完成落地动作后调用回调来播放声音
+        return cc.repeatForever(cc.sequence(jumpUp, jumpDown, callback));
     },
 
     onKeyDown (event) {
@@ -71,12 +84,46 @@ cc.Class({
         // 初始化键盘输入监听
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);  
+
+        this.canvas.on(cc.Node.EventType.TOUCH_START,function(event) {
+            var touches = event.getTouches();
+            var touchLoc = touches[0].getLocation();
+            if(touchLoc.x < cc.visibleRect.width/2){
+                this.accLeft = false
+                this.accRight = true
+            }else {
+                this.accLeft = true
+                this.accRight = false
+            }
+        },this)
+
+        this.canvas.on(cc.Node.EventType.TOUCH_MOVE,function(event) {
+            var touches = event.getTouches();
+            var touchLoc = touches[0].getLocation();
+            if(touchLoc.x < cc.visibleRect.width/2){
+                this.accLeft = true
+                this.accRight = false
+            }else {
+                this.accLeft = false
+                this.accRight = true
+            }
+        },this)
+
+        this.canvas.on(cc.Node.EventType.TOUCH_END,function(event) {
+            this.accLeft = false
+            this.accRight = false
+        },this)
     },
 
     onDestroy () {
         // 取消键盘输入监听
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    },
+
+    playJumpSound: function () {
+        // 调用声音引擎播放声音
+        cc.audioEngine.playEffect(this.jumpAudio, false);
     },
 
     start () {
@@ -98,5 +145,11 @@ cc.Class({
 
         // 根据当前速度更新主角的位置
         this.node.x += this.xSpeed * dt;
+        if (this.node.x < -cc.visibleRect.width/2){
+            this.node.x = -cc.visibleRect.width/2
+        }
+        if (this.node.x > cc.visibleRect.width/2){
+            this.node.x = cc.visibleRect.width/2
+        }
     },
 });
