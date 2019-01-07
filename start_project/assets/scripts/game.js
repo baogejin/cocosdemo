@@ -17,9 +17,7 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
-        // 星星产生后消失时间的随机范围
-        maxStarDuration: 0,
-        minStarDuration: 0,
+
         // 地面节点，用于确定星星生成的高度
         ground: {
             default: null,
@@ -30,7 +28,22 @@ cc.Class({
             default: null,
             type: cc.Node
         },
-        hasStar:false
+
+        hasStar:false,
+
+        // score label 的引用
+        scoreDisplay: {
+            default: null,
+            type: cc.Label
+        },
+
+        starDuration:10,
+
+        // 得分音效资源
+        scoreAudio: {
+            default: null,
+            type: cc.AudioClip
+        }
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -40,6 +53,11 @@ cc.Class({
         this.groundY = this.ground.y + this.ground.height/2;
         // 生成一个新的星星
         //this.spawnNewStar();
+
+        this.score = 0
+
+        // 初始化计时器
+        this.timer = 0;
     },
 
     spawnNewStar: function() {
@@ -51,6 +69,7 @@ cc.Class({
         newStar.setPosition(this.getNewStarPosition());
         // 在星星组件上暂存 Game 对象的引用
         newStar.getComponent('star').game = this;
+        this.timer = 0
     },
 
     getNewStarPosition: function () {
@@ -64,6 +83,20 @@ cc.Class({
         return cc.v2(randX, randY);
     },
 
+    gainScore: function () {
+        this.score += 1;
+        // 更新 scoreDisplay Label 的文字
+        this.scoreDisplay.string = '得分：' + this.score;
+
+        // 播放得分音效
+        cc.audioEngine.playEffect(this.scoreAudio, false);
+    },
+
+    gameOver: function () {
+        this.player.stopAllActions(); //停止 player 节点的跳跃动作
+        cc.director.loadScene('game');
+    },
+
     start () {
 
     },
@@ -73,5 +106,12 @@ cc.Class({
             this.spawnNewStar()
             this.hasStar = true
         }
+
+        if (this.timer > this.starDuration) {
+            this.gameOver();
+            return;
+        }
+
+        this.timer += dt
     },
 });
