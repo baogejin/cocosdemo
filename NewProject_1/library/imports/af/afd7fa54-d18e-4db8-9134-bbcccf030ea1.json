@@ -1,0 +1,37 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "hero0-down",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.6,
+  "sample": 5,
+  "speed": 1,
+  "wrapMode": "2",
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "e40dbe0b-ecb7-45c2-8de5-d9771f92ac9e"
+            }
+          },
+          {
+            "frame": 0.2,
+            "value": {
+              "__uuid__": "44a856f3-16fe-4cff-8915-efbd445ce409"
+            }
+          },
+          {
+            "frame": 0.4,
+            "value": {
+              "__uuid__": "5b5279de-ade9-4a4f-8530-b2732217be02"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": []
+}

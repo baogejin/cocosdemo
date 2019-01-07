@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.SpriteFrame",
+  "content": {
+    "name": "heros-22",
+    "texture": "1cc6b724-7212-4d70-990b-d6f8ce18ecef",
+    "atlas": "",
+    "rect": [
+      5,
+      0,
+      23,
+      32
+    ],
+    "offset": [
+      0.5,
+      0
+    ],
+    "originalSize": [
+      32,
+      32
+    ],
+    "capInsets": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}
