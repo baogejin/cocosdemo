@@ -29,7 +29,7 @@ cc.Class({
         canvas:{
             default:null,
             type:cc.Node
-        }
+        },
     },
 
     setJumpAction: function () {
@@ -89,11 +89,11 @@ cc.Class({
             var touches = event.getTouches();
             var touchLoc = touches[0].getLocation();
             if(touchLoc.x < cc.visibleRect.width/2){
-                this.accLeft = false
-                this.accRight = true
-            }else {
                 this.accLeft = true
                 this.accRight = false
+            }else {
+                this.accLeft = false
+                this.accRight = true
             }
         },this)
 
